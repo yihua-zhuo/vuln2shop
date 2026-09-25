@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>日常小店 · 简化版</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% macro csrf() %}<input type="hidden" name="csrf" value="{{ session.csrf }}">{% endmacro %}
+<header>
+  <a class="brand" href="{{ url_for('index') }}">日常小店 <small>EVERYDAY SHOP</small></a>
+  <nav aria-label="主导航">
+    <a href="{{ url_for('index') }}">商品</a>
+    {% if g.user %}
+      <a href="{{ url_for('cart') }}">购物车</a>
+      <a href="{{ url_for('orders') }}">订单</a>
+      <span>{{ g.user.username }}</span>
+      <form method="post" action="{{ url_for('logout') }}">{{ csrf() }}<button class="secondary">退出</button></form>
+    {% else %}
+      <a href="{{ url_for('login') }}">登录</a>
+      <a href="{{ url_for('register') }}">注册</a>
+    {% endif %}
+  </nav>
+</header>
+<main>
+  {% for message in get_flashed_messages() %}<p class="notice" role="status">{{ message }}</p>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+<footer>日常好物，简单选购。<span>本地演示 · 不收取付款</span></footer>
+</body>
+</html>

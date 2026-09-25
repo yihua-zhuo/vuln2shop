@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth card">
+<h1>{{ '创建账号' if registering else '欢迎回来' }}</h1>
+<p>{{ '注册后即可选购商品。' if registering else '登录，继续你的日常发现。' }}</p>
+<form method="post">
+  {{ csrf() }}
+  <label for="username">用户名</label><input id="username" name="username" maxlength="40" autocomplete="username" required>
+  <label for="password">密码{{ '（至少 8 字）' if registering else '' }}</label><input id="password" name="password" type="password" {% if registering %}minlength="8"{% endif %} maxlength="128" autocomplete="{{ 'new-password' if registering else 'current-password' }}" required>
+  <button>{{ '注册' if registering else '登录' }}</button>
+</form>
+<a href="{{ url_for('login' if registering else 'register') }}">{{ '已有账号？去登录' if registering else '没有账号？去注册' }}</a>
+</section>
+{% endblock %}

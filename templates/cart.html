@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>购物车</h1>
+{% for item in items %}
+<article class="card cart-line">
+  <div><h2>{{ item.name }}</h2><p>{{ item.price_cents | money }} / 件</p></div>
+  <form method="post">{{ csrf() }}<input type="hidden" name="product_id" value="{{ item.id }}"><label for="qty-{{ item.id }}">数量（0 为移除）</label><input id="qty-{{ item.id }}" type="number" name="quantity" min="0" max="99" value="{{ item.quantity }}" required><button class="secondary">更新</button></form>
+  <strong>{{ (item.price_cents * item.quantity) | money }}</strong>
+</article>
+{% else %}<p class="empty">购物车还是空的。<a href="{{ url_for('index') }}">去看看商品</a></p>{% endfor %}
+{% if items %}<section class="checkout"><h2>合计 {{ total | money }}</h2><p>修改数量后请先点击更新。下单仅生成演示订单。</p><form method="post" action="{{ url_for('checkout') }}">{{ csrf() }}<button>确认下单</button></form></section>{% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="intro"><small>LESS, BUT BETTER</small><h1>给日常，添一点喜欢。</h1><p>从一杯咖啡到一页灵感，发现生活里的小确幸。</p></section>
+<form class="search" method="get"><label for="q">寻找商品</label><input id="q" name="q" value="{{ q }}" placeholder="输入商品名或关键词"><button>搜索</button>{% if q %}<a href="{{ url_for('index') }}">清除</a>{% endif %}</form>
+{% if q %}<p>搜索关键词：{{ q | safe }}</p>{% endif %}
+<div class="grid">
+{% for p in products %}
+<article class="card">
+  <div class="product-art" aria-hidden="true">{{ {1: '◎', 2: '⌨', 3: '☕', 4: '▤'}.get(p.id, '◇') }}</div>
+  <h2>{{ p.name }}</h2><p>{{ p.description }}</p><strong class="price">{{ p.price_cents | money }}</strong>
+  {% if g.user %}
+    <form method="post" action="{{ url_for('cart') }}">{{ csrf() }}<input type="hidden" name="product_id" value="{{ p.id }}"><input type="hidden" name="quantity" value="1"><button>加入购物车（设为 1 件）</button></form>
+  {% else %}<a class="button" href="{{ url_for('login') }}">登录后选购</a>{% endif %}
+</article>
+{% else %}<p class="empty">没有找到相关商品，试试其他关键词。</p>{% endfor %}
+</div>
+{% endblock %}

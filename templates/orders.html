@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>我的订单</h1>
+{% for order in orders %}
+<article class="card"><h2><a href="{{ url_for('order_detail', oid=order.id) }}">订单 #{{ order.id }}</a> <small>已创建</small></h2><p>{{ order.created_at }} UTC</p>
+{% for item in order['items'] %}<p>{{ item.name }} × {{ item.quantity }} <strong>{{ (item.price_cents * item.quantity) | money }}</strong></p>{% endfor %}
+<hr><strong>合计 {{ order.total_cents | money }}</strong></article>
+{% else %}<p class="empty">暂无订单。<a href="{{ url_for('index') }}">开始选购</a></p>{% endfor %}
+{% endblock %}
