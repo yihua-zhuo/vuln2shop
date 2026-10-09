@@ -173,7 +173,8 @@ def create_app(config=None):
     def order_detail(oid):
         if not 1 <= oid <= 2147483647:
             abort(404)
-        row = get_db().execute('SELECT * FROM orders WHERE id = ?', (oid,)).fetchone()
+        row = get_db().execute('SELECT * FROM orders WHERE id = ? AND user_id = ?',
+                                (oid, g.user['id'])).fetchone()
         if row is None:
             abort(404)
         order = dict(row, items=get_db().execute(
