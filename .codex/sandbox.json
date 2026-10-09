@@ -1,0 +1,6 @@
+{
+  "image": "python:3.12-slim",
+  "setup": "python3 -m pip install --user -r requirements.txt",
+  "test": "python3 -m unittest -v test_product_search_security",
+  "mayWrite": ["test_product_search_security.py"]
+}
