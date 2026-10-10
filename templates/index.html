@@ -2,7 +2,7 @@
 {% block content %}
 <section class="intro"><small>LESS, BUT BETTER</small><h1>给日常，添一点喜欢。</h1><p>从一杯咖啡到一页灵感，发现生活里的小确幸。</p></section>
 <form class="search" method="get"><label for="q">寻找商品</label><input id="q" name="q" value="{{ q }}" placeholder="输入商品名或关键词"><button>搜索</button>{% if q %}<a href="{{ url_for('index') }}">清除</a>{% endif %}</form>
-{% if q %}<p>搜索关键词：{{ q | safe }}</p>{% endif %}
+{% if q %}<p>搜索关键词：{{ q }}</p>{% endif %}
 <div class="grid">
 {% for p in products %}
 <article class="card">
