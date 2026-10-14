@@ -64,20 +64,25 @@ class ShopTest(unittest.TestCase):
         payload = '<script>alert(1)</script>'
         response = self.client.get('/', query_string={'q': payload})
         self.assertEqual(response.status_code, 200)
-        self.assertIn(f'搜索关键词：{payload}', response.text)
+        self.assertIn('搜索关键词：&lt;script&gt;alert(1)&lt;/script&gt;', response.text)
+        self.assertNotIn(payload, response.text)
 
     def test_order_idor(self):
         self.account('alice')
         self.post('/cart', {'product_id': '1', 'quantity': '2'})
         self.post('/checkout')
+        response = self.client.get('/orders/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('复古相机 × 2', response.text)
+        self.assertIn('¥398.00', response.text)
         self.post('/logout')
         self.assertEqual(self.client.get('/orders/1').status_code, 302)
         self.account('bob')
         self.assertIn('暂无订单', self.client.get('/orders').text)
         response = self.client.get('/orders/1')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('复古相机 × 2', response.text)
-        self.assertIn('¥398.00', response.text)
+        self.assertEqual(response.status_code, 404)
+        self.assertNotIn('复古相机 × 2', response.text)
+        self.assertNotIn('¥398.00', response.text)
 
 
 if __name__ == '__main__':
