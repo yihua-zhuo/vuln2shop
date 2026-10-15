@@ -168,14 +168,19 @@ def create_app(config=None):
             'SELECT * FROM order_items WHERE order_id = ?', (row['id'],)).fetchall()) for row in rows]
         return render_template('orders.html', orders=orders)
 
+    def _load_own_order(oid):
+        if not 1 <= oid <= 2147483647:
+            abort(404)
+        row = get_db().execute('SELECT * FROM orders WHERE id = ? AND user_id = ?',
+                               (oid, g.user['id'])).fetchone()
+        if row is None:
+            abort(404)
+        return row
+
     @app.get('/orders/<int:oid>')
     @login_required
     def order_detail(oid):
-        if not 1 <= oid <= 2147483647:
-            abort(404)
-        row = get_db().execute('SELECT * FROM orders WHERE id = ?', (oid,)).fetchone()
-        if row is None:
-            abort(404)
+        row = _load_own_order(oid)
         order = dict(row, items=get_db().execute(
             'SELECT * FROM order_items WHERE order_id = ?', (oid,)).fetchall())
         return render_template('orders.html', orders=[order])
