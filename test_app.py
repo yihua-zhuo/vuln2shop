@@ -57,8 +57,9 @@ class ShopTest(unittest.TestCase):
         self.assertIn('没有找到相关商品', self.client.get('/', query_string={'q': 'no-match-xyz'}).text)
         response = self.client.get('/', query_string={'q': "no-match-xyz' OR 1=1 -- "})
         self.assertEqual(response.status_code, 200)
-        self.assertIn('复古相机', response.text)
-        self.assertIn('机械键盘', response.text)
+        self.assertNotIn('复古相机', response.text)
+        self.assertNotIn('机械键盘', response.text)
+        self.assertIn('没有找到相关商品', response.text)
 
     def test_search_reflected_xss(self):
         payload = '<script>alert(1)</script>'
