@@ -64,7 +64,8 @@ class ShopTest(unittest.TestCase):
         payload = '<script>alert(1)</script>'
         response = self.client.get('/', query_string={'q': payload})
         self.assertEqual(response.status_code, 200)
-        self.assertIn(f'搜索关键词：{payload}', response.text)
+        self.assertIn('搜索关键词：&lt;script&gt;alert(1)&lt;/script&gt;', response.text)
+        self.assertNotIn(payload, response.text)
 
     def test_order_idor(self):
         self.account('alice')
