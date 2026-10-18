@@ -162,7 +162,8 @@ def create_app(config=None):
     @app.get('/orders')
     @login_required
     def orders():
-        rows = get_db().execute('SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC',
+        # The user_id condition is the ownership check.
+        rows = get_db().execute('SELECT id, total_cents, created_at FROM orders WHERE user_id = ? ORDER BY id DESC',
                                 (g.user['id'],)).fetchall()
         orders = [dict(row, items=get_db().execute(
             'SELECT * FROM order_items WHERE order_id = ?', (row['id'],)).fetchall()) for row in rows]
