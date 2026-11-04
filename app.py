@@ -69,7 +69,8 @@ def create_app(config=None):
     def index():
         q = request.args.get('q', '').strip()
         products = get_db().execute(
-            f"SELECT * FROM products WHERE name LIKE '%{q}%' OR description LIKE '%{q}%' ORDER BY id",
+            "SELECT * FROM products WHERE name LIKE ? OR description LIKE ? ORDER BY id",
+            (f'%{q}%', f'%{q}%'),
         ).fetchall()
         return render_template('index.html', products=products, q=q)
 
